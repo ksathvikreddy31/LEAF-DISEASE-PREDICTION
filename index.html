@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Disease Detection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🌿 Leaf Disease Detection Model</h1>
+        <p>This model detects various leaf diseases using deep learning techniques. Upload a leaf image of the following plants for analysis:</p>
+        <ul>
+            <li>Apple</li>
+            <li>Cherry</li>
+            <li>Corn</li>
+            <li>Grape</li>
+            <li>Peach</li>
+            <li>Pepper</li>
+            <li>Potato</li>
+            <li>Strawberry</li>
+            <li>Tomato</li>
+        </ul>
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="uploadButton">Upload</button>
+        <div id="result" class="hidden">
+            <h2>Prediction:</h2>
+            <p id="predictionText"></p>
+            <img id="uploadedImage" alt="Uploaded Image">
+        </div>
+    </div>
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', async () => {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select an image file!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            document.getElementById('predictionText').textContent = data.prediction;
+            const uploadedImage = document.getElementById('uploadedImage');
+            uploadedImage.src = URL.createObjectURL(file);
+            uploadedImage.style.display = 'block';
+            document.getElementById('result').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
